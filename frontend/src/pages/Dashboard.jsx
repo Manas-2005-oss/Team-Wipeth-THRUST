@@ -1,14 +1,15 @@
- import { useState } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import LeftPanel from "../components/LeftPanel";
 import ResultsPanel from "../components/ResultPanel";
+ 
 
 
 export default function Dashboard() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  
   const handleRun = async (inputs) => {
     try {
       setLoading(true);
@@ -29,6 +30,8 @@ export default function Dashboard() {
 
       const data = await response.json();
       setResults(data);
+      window.simulationData = data;
+       
 
       // 2️ SAVE SCENARIO
       await fetch(
@@ -54,6 +57,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+
+      
 
       {/* Policy Input Panel */}
       <LeftPanel onRun={handleRun} />
@@ -82,7 +87,7 @@ export default function Dashboard() {
         {!loading && results && (
           <ResultsPanel results={results} />
         )}
-
+         
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 from config import BASE_OUTPUTS
 
 
+
 def compute_production(inputs):
 
     # =============================

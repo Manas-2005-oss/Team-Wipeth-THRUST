@@ -1,0 +1,14 @@
+{
+  "agriculture": {
+    "share_percent": 0.1794,
+    "description": "Agriculture, forestry and fishing"
+  },
+  "industry": {
+    "share_percent": 0.2713,
+    "description": "Manufacturing, mining, construction, utilities"
+  },
+  "services": {
+    "share_percent": 0.5493,
+    "description": "Trade, finance, communication, public services"
+  }
+}

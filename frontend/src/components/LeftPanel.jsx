@@ -33,7 +33,7 @@ export default function LeftPanel({ onRun }) {
     <div className="bg-white rounded-2xl shadow-lg p-8 mx-8 mt-6">
 
       <h1 className="text-2xl text-center font-bold mb-8">
-        THRUST Hybrid CGE Policy Simulator
+         Hybrid Policy Simulator
       </h1>
 
       <div className="grid gap-8 lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1">

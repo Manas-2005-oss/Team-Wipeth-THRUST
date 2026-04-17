@@ -1,15 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from schemas import SimulationInput
-
-
-
-
-
 from model.engine import run_simulation
+from pydantic import BaseModel
 from model.equilibrium_wrapper import solve_equilibrium
 from model.policy_ai import generate_policy_advice, policy_score
 from model.scenario_manager import save_scenario, get_scenarios
+from model.policy_ai import get_chat_response
+from llm.routes import router as llm_router
 
 app = FastAPI()
 
@@ -21,9 +19,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def root():
     return {"message": "CGE Backend Running with Equilibrium Solver"}
+
+
+# ===============================
+# 📦 CHAT REQUEST SCHEMA
+# ===============================
+class ChatRequest(BaseModel):
+    query: str
+    result: dict = {}
 
 
 # =========================
@@ -32,9 +39,11 @@ def root():
 @app.post("/simulate")
 def simulate(input_data: SimulationInput):
 
-    # Solve equilibrium 
-    result = solve_equilibrium(run_simulation, input_data)
-
+    # Solve equilibrium using baseline mode (User Dashboard)
+    result = solve_equilibrium(
+        lambda inputs: run_simulation(inputs, mode="baseline"),
+        input_data
+    )
 
     result["ai_advice"] = generate_policy_advice(result)
 
@@ -50,7 +59,10 @@ def simulate(input_data: SimulationInput):
 @app.post("/save_scenario/{scenario_name}")
 def save_scenario_api(scenario_name: str, input_data: SimulationInput):
 
-    result = solve_equilibrium(run_simulation, input_data)
+    result = solve_equilibrium(
+        lambda inputs: run_simulation(inputs, mode="baseline"),
+        input_data
+    )
 
     result["ai_advice"] = generate_policy_advice(result)
     result["policy_score"] = policy_score(result)
@@ -94,3 +106,25 @@ def compare_scenarios():
         "ranking": comparison
     }
 
+
+# ===============================
+# 📦 CHAT REQUEST SCHEMA
+# ===============================
+class ChatRequest(BaseModel):
+    query: str
+    result: dict = {}
+
+
+# =========================
+#  CHATBOT
+# =========================
+@app.post("/chat")
+def chat(req: ChatRequest):
+    answer = get_chat_response(req.query, req.result)
+    return {"answer": answer}
+
+
+# =========================
+#  LLM ROUTES (Economist Mode)
+# =========================
+app.include_router(llm_router)

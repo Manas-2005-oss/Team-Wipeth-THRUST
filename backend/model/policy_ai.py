@@ -1,4 +1,8 @@
+from dotenv import load_dotenv
+import os
+from groq import Groq
 
+load_dotenv()
 
 def generate_policy_advice(result):
     """
@@ -9,7 +13,7 @@ def generate_policy_advice(result):
     policy = result["policy"]
     baseline = result["baseline"]
 
-    advice = []
+    advice = [] 
 
     # ===============================
     #  Growth Analysis
@@ -81,3 +85,66 @@ def policy_score(result):
     score = max(0, min(100, score))
 
     return round(score, 2)
+
+
+
+# ===============================
+# 🤖 CHATBOT (ADD BELOW THIS LINE)
+# ===============================
+ 
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
+)
+
+def call_grok(prompt):
+    try:
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an AI Policy Assistant for economics and CGE models. Give short, precise answers (2-3 lines max). Avoid long explanations. Be clear and accurate."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+
+        return response.choices[0].message.content
+
+    except Exception as e:
+        return f"AI Error: {str(e)}"
+# =========================
+# 🧠 CHAT FUNCTION AFTER
+# =========================
+def get_chat_response(query, result=None):
+
+    context_text = ""
+
+    if result:
+        policy = result.get("policy", {})
+        baseline = result.get("baseline", {})
+
+        context_text = f"""
+GDP: {baseline.get("GDP",0)} → {policy.get("GDP",0)}
+Inflation: {policy.get("inflation",0)}
+Unemployment: {policy.get("unemployment",0)}
+Deficit: {policy.get("deficit",0)}
+"""
+
+    prompt = f"""
+You are an AI Policy Assistant for economics and CGE models.
+
+Answer clearly and simply.
+
+{context_text}
+
+User Question:
+{query}
+
+Answer:
+"""
+
+    return call_grok(prompt)

@@ -83,7 +83,7 @@ export default function Landing() {
           boxShadow: "0 0 40px rgba(255,255,255,0.9)"
         }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate("/mode-selection")}
         className="mt-14 px-3 py-3 rounded-2xl font-semibold text-lg z-10"
         style={{
           background: "linear-gradient(135deg,#ffffff,#d9d9d9)",

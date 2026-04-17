@@ -1,17 +1,17 @@
-import React from "react";
+ import React from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 
 export default function AboutUs() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-indigo-50 via-white to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-all duration-500">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-all duration-500">
 
-      {/* Animated Glow */}
+      {/* Background Glow */}
       <div className="absolute -top-50 -right-50 w-125 h-125 bg-indigo-400/20 dark:bg-green-400/20 blur-[120px] rounded-full animate-pulse"></div>
 
       <Navbar />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section className="pt-36 pb-24 px-6 text-center relative z-10">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
@@ -28,10 +28,29 @@ export default function AboutUs() {
           transition={{ delay: 0.4 }}
           className="text-lg max-w-4xl mx-auto text-slate-600 dark:text-slate-300 leading-relaxed"
         >
-          THRUST is a CGE-inspired macroeconomic simulation engine modeling
-          sectoral ripple effects, fiscal shocks, labor mobility, inflation
-          feedback, and dynamic equilibrium convergence.
+          THRUST is an AI-driven economic policy simulator designed to model how
+          fiscal policies, sector productivity, labor mobility, and trade
+          policies affect macroeconomic indicators like GDP, unemployment,
+          inflation, and sectoral output.
         </motion.p>
+      </section>
+
+      {/* FEATURE CARDS */}
+      <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-8">
+        <Feature
+          title="Macroeconomic Simulation"
+          desc="Simulates sector interactions between agriculture, manufacturing, and services using a CGE-inspired framework."
+        />
+
+        <Feature
+          title="Policy Shock Modeling"
+          desc="Evaluate impacts of taxation, tariffs, subsidies, and government spending policies on economic outcomes."
+        />
+
+        <Feature
+          title="Dynamic Equilibrium Engine"
+          desc="Iterative solver stabilizes the economy by adjusting GDP, inflation, and labor markets until convergence."
+        />
       </section>
 
       <div className="max-w-6xl mx-auto px-6 space-y-24 pb-24 relative z-10">
@@ -105,28 +124,63 @@ export default function AboutUs() {
           </Formula>
         </Section>
 
-        <Section title="System Architecture">
-          <ul className="list-disc ml-6 space-y-2 text-slate-600 dark:text-slate-300">
-            <li>Production Module</li>
-            <li>Fiscal Engine</li>
-            <li>Labor Market Module</li>
-            <li>Inflation & Equilibrium Solver</li>
-            <li>Social Accounting Matrix Engine</li>
-            <li>AI Policy Ranking System</li>
-            <li>Interactive Dashboard Visualization</li>
+        {/* WORKFLOW */}
+        <Section title="System Workflow">
+          <ul className="list-disc ml-6 space-y-2">
+            <li>Policy input is provided through the dashboard.</li>
+            <li>The system interprets policy parameters.</li>
+            <li>Economic modules simulate production, fiscal effects, and labor adjustments.</li>
+            <li>Trade and equilibrium solver stabilize the economy.</li>
+            <li>Results are visualized through interactive charts.</li>
           </ul>
         </Section>
 
       </div>
 
-      <div className="text-center text-sm pb-12 text-slate-500 dark:text-slate-400 relative z-10">
-        THRUST © 2026
-      </div>
+      {/* MODERN FOOTER */}
+      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 backdrop-blur-lg">
+        <div className="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-10 text-center md:text-left">
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2">THRUST</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              AI powered macroeconomic policy simulator designed to evaluate
+              fiscal and trade policies through interactive economic modeling.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Core Modules</h3>
+            <ul className="text-sm space-y-1 text-slate-600 dark:text-slate-400">
+              <li>Production Engine</li>
+              <li>Fiscal Simulation</li>
+              <li>Labor Market Model</li>
+              <li>Trade Analysis</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Technology</h3>
+            <ul className="text-sm space-y-1 text-slate-600 dark:text-slate-400">
+              <li>React Dashboard</li>
+              <li>FastAPI Backend</li>
+              <li>Economic Simulation Engine</li>
+              <li>Interactive Data Visualization</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div className="text-center text-sm py-4 text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700">
+          © 2026 Team Wipeth
+        </div>
+      </footer>
+
     </div>
   );
 }
 
-/* ================= SECTION COMPONENT ================= */
+/* SECTION */
 
 const Section = ({ title, children }) => (
   <motion.section
@@ -138,7 +192,7 @@ const Section = ({ title, children }) => (
   >
     <h2 className="text-3xl font-bold mb-6 relative inline-block">
       {title}
-      <span className="block h-1 w-16 bg-linear-to-r from-indigo-500 to-purple-600 dark:from-green-400 dark:to-blue-500 mt-2 rounded-full"></span>
+      <span className="block h-1 w-16 bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-green-400 dark:to-blue-500 mt-2 rounded-full"></span>
     </h2>
 
     <div className="space-y-5 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
@@ -147,10 +201,24 @@ const Section = ({ title, children }) => (
   </motion.section>
 );
 
-/* ================= FORMULA COMPONENT ================= */
+/* FORMULA */
 
 const Formula = ({ children }) => (
-  <div className="mt-4 px-6 py-4 rounded-2xl bg-linear-to-r from-indigo-100 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border-l-4 border-indigo-600 dark:border-green-400 font-mono text-indigo-700 dark:text-green-400 shadow-inner hover:scale-[1.02] transition-transform duration-300">
+  <div className="mt-4 px-6 py-4 rounded-2xl bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border-l-4 border-indigo-600 dark:border-green-400 font-mono text-indigo-700 dark:text-green-400 shadow-inner hover:scale-[1.02] transition-transform duration-300">
     {children}
   </div>
+);
+
+/* FEATURE */
+
+const Feature = ({ title, desc }) => (
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-lg p-6 rounded-2xl shadow-lg"
+  >
+    
+    <h3 className="font-semibold text-lg mb-2">{title}</h3>
+    <p className="text-sm text-slate-600 dark:text-slate-300">{desc}</p>
+
+  </motion.div>
 );

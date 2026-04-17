@@ -1,64 +1,185 @@
-# 🚀 THRUST – CGE Economic Policy Simulator
+# THRUST – AI Driven Economic Policy Simulator
 
-THRUST is a Computable General Equilibrium (CGE)-inspired macroeconomic simulation platform that models how fiscal and structural policy decisions impact GDP, employment, inflation, wages, sectoral output, and fiscal balance.
+## Overview
+THRUST is an AI-powered macroeconomic policy simulator that allows users to test economic policies and analyze their impact on key indicators such as GDP, unemployment, inflation, trade balance, and sector output.
 
-This project was developed as a hackathon solution to simulate intersector economic relationships and visualize policy-driven ripple effects in a dynamic equilibrium framework.
-
----
-
-## 🎯 Problem Statement
-
-Design a simplified CGE model that captures:
-
-- Intersector production relationships
-- Fiscal policy shocks (tax, spending, subsidy)
-- Labor market adjustments
-- Inflation feedback effects
-- Equilibrium convergence
-- AI-based policy evaluation
+The system enables policymakers, economists, and researchers to experiment with fiscal and trade policy scenarios using an interactive dashboard powered by an economic simulation engine.
 
 ---
 
-## 🧠 How THRUST Works
+# System Architecture
 
-When the simulator runs:
+The system is divided into two main components:
 
-1. Sectoral productivity or policy shocks are applied.
-2. Production outputs are recalculated.
-3. GDP is computed from sectoral output.
-4. Fiscal revenue and deficit are evaluated.
-5. Unemployment adjusts using an Okun-inspired rule.
-6. Inflation responds to demand and deficit pressure.
-7. An equilibrium solver stabilizes the economy.
-8. AI-based policy scoring ranks scenario quality.
-9. Social Accounting Matrix (SAM) visualizes flow relationships.
+### Frontend
+React-based dashboard built using modern UI components.
+
+Features:
+- This model contains dual interface one General User Interface another one is Economist Interface
+- Policy input interface
+- Economic indicators dashboard
+- Interactive data visualizations
+- Sector distribution analysis
+- Trade and fiscal analysis charts
+- AI Policy Assistant (User Mode)
+
+### Backend
+FastAPI-based economic simulation engine.
+
+Modules include:
+
+- Production Model
+- Fiscal Policy Module
+- Labor Market Model
+- Trade Model
+- GDP Forecasting Engine
+- Policy Interpretation Engine
 
 ---
 
-## 📊 Key Economic Components
+# AI Policy Assistant
 
-### Production Function
+The system includes an AI-powered policy assistant that helps interpret natural language policy instructions entered by users.
 
+
+The assistant converts the natural language instruction into structured policy parameters used by the economic simulation engine.
 
 ---
 
-## 🏗 Architecture
+# External APIs Used
 
-### Backend (FastAPI)
-- Modular economic engine
-- Production module
-- Fiscal module
-- Labor market module
-- Inflation module
-- Equilibrium solver
-- AI policy scoring
-- Scenario comparison system
+The project uses the **Groq API** to power the AI Policy Assistant.
 
-### Frontend (React + Tailwind)
-- Interactive policy input dashboard
-- GDP impact visualization
-- Sectoral output charts
-- Labor allocation pie chart
-- Convergence curve
-- Social Accounting Matrix (Sankey)
-- Scenario ranking system
+Model used:
+
+**LLaMA-3.1-8B-Instant**
+
+The LLM interprets user policy prompts and extracts policy parameters that are passed to the backend simulation engine.
+
+---
+
+# API Setup
+
+To run the AI Policy Assistant, you must set the Groq API key as an environment variable.
+
+### Linux / Mac
+
+```
+export GROQ_API_KEY=your_api_key_here
+```
+
+### Windows
+
+```
+set GROQ_API_KEY=your_api_key_here
+```
+
+The backend reads the API key securely using environment variables.
+
+---
+
+ 
+
+# Running the Project
+
+## Backend
+
+Navigate to the backend directory:
+
+```
+cd backend
+```
+
+Install dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+Run the FastAPI server:
+
+```
+uvicorn main:app --reload
+```
+
+Backend will start at:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## Frontend
+
+Navigate to the frontend directory:
+
+```
+cd frontend
+```
+
+Install dependencies:
+
+```
+pnpm install
+```
+
+Run the frontend:
+
+```
+pnpm run dev
+```
+
+Frontend will start at:
+
+```
+http://localhost:5173
+```
+
+---
+
+# Testing the Simulation
+
+Example policy input:
+
+```
+increase manufacturing subsidy by 10%
+reduce tax by 3%
+increase tariff by 5%
+```
+
+The simulator will display:
+
+- GDP impact
+- Unemployment change
+- Inflation change
+- Trade balance
+- Sector output distribution
+- Economic forecast graphs
+
+---
+
+# Technology Stack
+
+### Frontend
+- React
+- Tailwind CSS
+- Vite
+- Chart visualizations
+
+### Backend
+- FastAPI
+- Python
+- Economic simulation engine
+
+### AI
+- Groq API
+- LLaMA-3.1-8B-Instant
+
+---
+
+# Team
+
+**Team THRUST**
+
+AI Economic Policy Simulator

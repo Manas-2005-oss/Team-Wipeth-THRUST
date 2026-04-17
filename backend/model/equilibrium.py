@@ -1,29 +1,58 @@
 from config import BASELINE_GDP, BASELINE_INFLATION
 
 
-def compute_inflation(GDP, deficit, wage):
+def compute_inflation(GDP, deficit, wage,
+                      mode="baseline",
+                      baseline_gdp=None,
+                      baseline_inflation=None,
+                      baseline_wage=600):
+
+    """
+    Inflation model based on macroeconomic drivers:
+
+    1️⃣ Demand-pull inflation (GDP growth)
+    2️⃣ Fiscal pressure (deficit)
+    3️⃣ Wage-push inflation (labor costs)
+
+    User Mode → baseline constants
+    Economist Mode → dataset baselines
+    """
 
     # =========================
-    # 1️ GDP Demand Pressure
+    # 1️⃣ SELECT BASELINES
     # =========================
-    delta_gdp_pct = ((GDP - BASELINE_GDP) / BASELINE_GDP) * 100
+    if mode == "dataset":
+
+        base_gdp = baseline_gdp
+        base_inflation = baseline_inflation
+        base_wage = baseline_wage
+
+    else:
+
+        base_gdp = BASELINE_GDP
+        base_inflation = BASELINE_INFLATION
+        base_wage = baseline_wage
 
     # =========================
-    # 2️ Fiscal Pressure
+    # 2️⃣ GDP DEMAND PRESSURE
+    # =========================
+    delta_gdp_pct = ((GDP - base_gdp) / base_gdp) * 100
+
+    # =========================
+    # 3️⃣ FISCAL PRESSURE
     # =========================
     deficit_ratio = deficit / GDP if GDP != 0 else 0
 
     # =========================
-    # 3️ Wage Pressure
+    # 4️⃣ WAGE PRESSURE
     # =========================
-    BASE_WAGE = 500
-    wage_pressure = (wage - BASE_WAGE) / BASE_WAGE
+    wage_pressure = (wage - base_wage) / base_wage
 
     # =========================
-    # 4️ Inflation Formula
+    # 5️⃣ INFLATION EQUATION
     # =========================
     inflation = (
-        BASELINE_INFLATION
+        base_inflation
         + 0.3 * delta_gdp_pct
         + 0.5 * deficit_ratio
         + 0.4 * wage_pressure
@@ -32,4 +61,4 @@ def compute_inflation(GDP, deficit, wage):
     # Clamp realistic bounds
     inflation = max(2, min(15, inflation))
 
-    return inflation
+    return round(inflation, 2)
