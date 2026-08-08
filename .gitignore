@@ -25,3 +25,24 @@ build/
 # System
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Generated files
+Outputs/
+
+# Docker
+*.log

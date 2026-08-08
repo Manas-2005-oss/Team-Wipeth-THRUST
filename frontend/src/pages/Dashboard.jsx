@@ -1,21 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import LeftPanel from "../components/LeftPanel";
 import ResultsPanel from "../components/ResultPanel";
- 
+import SimulationHistory from "../components/SimulationHistory";
 
+
+import {
+  saveSimulation,
+  getSimulationHistory,
+} from "../services/simulationHistory";
 
 export default function Dashboard() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [history, setHistory] = useState([]);
+
+  // Load history when dashboard opens
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  // Function to fetch simulation history
+  const loadHistory = async () => {
+    try {
+      const historyData = await getSimulationHistory("user");
+      console.log("History:", historyData);
+      setHistory(historyData);
+    } catch (err) {
+      console.error("History Error:", err);
+    }
+  };
+
   const handleRun = async (inputs) => {
     try {
       setLoading(true);
       setError(null);
 
-      // 1️ Run Simulation
+      // 1️⃣ Run Simulation
       const response = await fetch("http://127.0.0.1:8000/simulate", {
         method: "POST",
         headers: {
@@ -29,11 +51,22 @@ export default function Dashboard() {
       }
 
       const data = await response.json();
+
       setResults(data);
       window.simulationData = data;
-       
 
-      // 2️ SAVE SCENARIO
+      // Save simulation to Supabase
+      await saveSimulation({
+        mode: "user",
+        policyName: `Scenario_${Date.now()}`,
+        results: data,
+        inputs: inputs,
+      });
+
+      // Refresh history immediately
+      await loadHistory();
+
+      // 2️⃣ Save Scenario to FastAPI
       await fetch(
         `http://127.0.0.1:8000/save_scenario/Scenario_${Date.now()}`,
         {
@@ -46,7 +79,6 @@ export default function Dashboard() {
       );
 
       setLoading(false);
-
     } catch (err) {
       console.error("Simulation error:", err);
       setError("Failed to connect to backend.");
@@ -58,14 +90,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      
-
       {/* Policy Input Panel */}
       <LeftPanel onRun={handleRun} />
 
-      {/* Results Section */}
       <div className="p-8">
-
         {loading && (
           <div className="text-blue-600 text-lg font-semibold">
             Running Simulation...
@@ -87,7 +115,8 @@ export default function Dashboard() {
         {!loading && results && (
           <ResultsPanel results={results} />
         )}
-         
+
+       
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
- import { useState } from "react";
+ import { useState,  useEffect } from "react";
 
 export default function LeftPanel({ onRun }) {
 
@@ -20,6 +20,17 @@ export default function LeftPanel({ onRun }) {
     laborShift: 0,
     minWage: 600
   });
+
+  useEffect(() => {
+  const savedInputs = sessionStorage.getItem("simulationInputs");
+
+  if (savedInputs) {
+    setInputs(JSON.parse(savedInputs));
+
+    // Clear after using once
+    sessionStorage.removeItem("simulationInputs");
+  }
+}, []);
 
   const handleChange = (field, value) => {
     setInputs({ ...inputs, [field]: Number(value) });

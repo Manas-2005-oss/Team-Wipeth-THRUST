@@ -1,26 +1,68 @@
 import { useNavigate } from "react-router-dom";
 import { BarChart3, Users } from "lucide-react";
- 
+import { supabase } from "../lib/supabase";
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ModeSelection() {
 
   const navigate = useNavigate();
 
-  return ( 
+  const { user } = useAuth();
+
+  const [showProfile, setShowProfile] = useState(false);
+
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setShowProfile(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    setShowProfile(false);
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    navigate("/", { replace: true });
+  };
+
+  return (
 
     <div className="min-h-screen flex flex-col items-center justify-center 
     bg-gradient-to-b from-white to-gray-100 px-6 relative">
 
-       <div
-  className="absolute top-6 left-8 text-2xl font-bold tracking-widest text-black-600"
-  style={{
-    fontFamily: "Bebas Neue, Anton",
-    letterSpacing: "0.18em",
-    textShadow: "0 0 20px rgba(255,255,255,1)"
-  }}
->
-  THRUST
-</div>
+      <div
+        className="absolute top-6 left-8 text-2xl font-bold tracking-widest text-black-600"
+        style={{
+          fontFamily: "Bebas Neue, Anton",
+          letterSpacing: "0.18em",
+          textShadow: "0 0 20px rgba(255,255,255,1)"
+        }}
+      >
+        THRUST
+      </div>
 
       {/* Title */}
       <h1 className="text-4xl font-bold text-gray-800 mb-4 tracking-tight">
@@ -124,10 +166,124 @@ export default function ModeSelection() {
         </div>
 
       </div>
+      <div
+        ref={profileRef}
+        className="absolute top-6 right-6 z-50"
+      >
 
+        {/* Profile Button */}
+        <motion.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowProfile(!showProfile)}
+          className="
+      w-12 h-12
+      rounded-full
+      bg-white
+      shadow-xl
+      border border-gray-200
+      flex
+      items-center
+      justify-center
+      font-bold
+      text-gray-700
+    "
+        >
+          {(
+            user?.user_metadata?.full_name?.[0] ||
+            user?.email?.[0] ||
+            "U"
+          ).toUpperCase()}
+        </motion.button>
+
+        <AnimatePresence>
+
+          {showProfile && (
+
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="
+          absolute
+          right-0
+          mt-3
+          w-72
+          rounded-xl
+          bg-white
+          shadow-2xl
+          border
+          overflow-hidden
+        "
+            >
+
+              {/* User Details */}
+              <div className="px-5 py-4 border-b">
+
+                <div className="flex items-center gap-3">
+
+                  <div className="
+              w-10
+              h-10
+              rounded-full
+              bg-blue-600
+              text-white
+              flex
+              items-center
+              justify-center
+              font-bold
+            ">
+                    {(
+                      user?.user_metadata?.full_name?.[0] ||
+                      user?.email?.[0] ||
+                      "U"
+                    ).toUpperCase()}
+                  </div>
+
+                  <div>
+
+                    <p className="font-semibold text-gray-800">
+                      {user?.user_metadata?.full_name || "User"}
+                    </p>
+
+                    <p className="text-sm text-gray-500 break-all">
+                      {user?.email}
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="
+            w-full
+            text-left
+            px-5
+            py-3
+            text-red-600
+            font-medium
+            hover:bg-red-50
+            transition
+          "
+              >
+                Logout
+              </button>
+
+            </motion.div>
+
+          )}
+
+        </AnimatePresence>
+
+      </div>
       {/* Footer */}
       <div className="absolute bottom-6 text-sm text-gray-400">
-        © 2026 CGE Simulator • Economic Policy Analysis Tool
+        © 2026 Team Wipeth
       </div>
 
     </div>

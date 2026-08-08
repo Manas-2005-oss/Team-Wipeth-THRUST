@@ -1,12 +1,53 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ChatBot from "../components/ChatBot.jsx";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
 
   const [showChat, setShowChat] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+
+  const profileRef = useRef(null);
+
+  const { user } = useAuth();
+
   const navigate = useNavigate(); // ✅ NEW
+
+  const handleLogout = async () => {
+    setShowProfile(false);
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    navigate("/", { replace: true });
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setShowProfile(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
   return (
     <nav className="w-full top-8 left-0 z-50">
@@ -48,10 +89,12 @@ export default function Navbar() {
           </div>
         </motion.div>
 
-        {/* 🔥 RIGHT SIDE (CHAT + MODE BUTTON) */}
-        <div className="flex items-center gap-4">
+        <div
+          ref={profileRef}
+          className="flex items-center gap-4 relative"
+        >
 
-          {/* 🤖 AI CHAT BUTTON */}
+          {/* AI CHAT */}
           <motion.button
             onClick={() => setShowChat(true)}
             whileHover={{ scale: 1.08 }}
@@ -62,20 +105,103 @@ export default function Navbar() {
             AI Policy Assistant
           </motion.button>
 
-          {/* 🚀 MODE BUTTON (NEW) */}
+          {/* MODE */}
           <motion.button
             onClick={() => navigate("/mode-selection")}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             className="
-              bg-gradient-to-r from-blue-600 to-cyan-500
-              text-white px-4 py-2 rounded-full text-sm font-semibold
-              shadow-md hover:shadow-xl
-              transition-all duration-300
-            "
+      bg-gradient-to-r from-blue-600 to-cyan-500
+      text-white px-4 py-2 rounded-full
+      text-sm font-semibold
+      shadow-md hover:shadow-xl
+      transition-all duration-300
+    "
           >
             Mode
           </motion.button>
+
+          {/* PROFILE ICON */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowProfile(!showProfile)}
+            className="
+      w-11 h-11
+      rounded-full
+      bg-white
+      text-slate-800
+      font-bold
+      shadow-lg
+      flex
+      items-center
+      justify-center
+    "
+          >
+            {(
+              user?.user_metadata?.full_name?.[0] ||
+              user?.email?.[0] ||
+              "U"
+            ).toUpperCase()}
+          </motion.button>
+
+          <AnimatePresence>
+
+            {showProfile && (
+
+              <motion.div
+                initial={{ opacity: 0, y: -15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="
+          absolute
+          right-0
+          top-14
+          w-72
+          bg-white
+          rounded-xl
+          shadow-2xl
+          overflow-hidden
+        "
+              >
+
+                <div className="px-5 py-4 border-b">
+
+                  <div className="font-semibold text-slate-800">
+                    {user?.user_metadata?.full_name || "User"}
+                  </div>
+
+                  <div className="text-sm text-slate-500 break-all">
+                    {user?.email}
+                  </div>
+
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="
+            w-full
+            text-left
+            px-5
+            py-3
+            hover:bg-red-50
+            text-red-600
+            font-medium
+          "
+                >
+                  Logout
+                </button>
+                <button
+                  onClick={() => navigate("/history")}
+                  className="w-full text-left px-4 py-2 hover:bg-red-50 transition"
+                >
+                  Policy Workspace
+                </button>
+              </motion.div>
+
+            )}
+
+          </AnimatePresence>
 
         </div>
 
@@ -119,9 +245,8 @@ function NavItem({ to, children }) {
               textShadow: "0 0 12px rgba(37,99,235,0.9)"
             }}
             transition={{ type: "spring", stiffness: 300 }}
-            className={`relative cursor-pointer ${
-              isActive ? "text-blue-600" : "text-slate-700"
-            }`}
+            className={`relative cursor-pointer ${isActive ? "text-blue-600" : "text-slate-700"
+              }`}
           >
             {children}
 

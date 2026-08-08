@@ -1,0 +1,23 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: cge_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: cge_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "pnpm install --no-frozen-lockfile --config.confirmModulesPurge=false && pnpm dev --host"
+    depends_on:
+      - backend

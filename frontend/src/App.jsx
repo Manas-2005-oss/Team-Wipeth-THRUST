@@ -1,4 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Auth from "./pages/Auth";
+import PublicRoute from "./components/auth/PublicRoute";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
+import History from "./pages/History";
+import SimulationDetails from "./pages/SimulationDetails";
+
+import LLMHistory from "./pages/LLMHistory";
+import LLMDetails from "./pages/LLMDetails";
 
 import Landing from "./pages/Landing";
 import ModeSelection from "./pages/ModeSelection";
@@ -20,11 +29,19 @@ function App() {
         <Route path="/" element={<Landing />} />
 
         {/* Mode Selection */}
-        <Route path="/mode-selection" element={<ModeSelection />} />
+        <Route path="/mode-selection" element={
+          <ProtectedRoute>
+            <ModeSelection />
+          </ProtectedRoute>
+        } />
 
         {/* Dashboards */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/economist" element={<EconomistDashboard />} />
+        <Route path="/dashboard" element={<ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>} />
+        <Route path="/economist" element={<ProtectedRoute>
+          <EconomistDashboard />
+        </ProtectedRoute>} />
 
         {/* Pages */}
         <Route path="/about" element={<AboutUs />} />
@@ -32,6 +49,11 @@ function App() {
         <Route path="/labor-adjustment" element={<LaborAdjustment />} />
         <Route path="/team" element={<Team />} />
         <Route path="/squad" element={<Squad />} />
+        <Route path="/auth" element={<PublicRoute>  <Auth /> </PublicRoute>} />
+        <Route path="/history"element={  <ProtectedRoute> <History />    </ProtectedRoute>  } />
+        <Route path="/history/:id" element={<ProtectedRoute> <SimulationDetails /> </ProtectedRoute>} />
+        <Route path="/llm-history" element={<ProtectedRoute> <LLMHistory /> </ProtectedRoute>} />
+        <Route path="/llm-history/:id" element={<ProtectedRoute> <LLMDetails /> </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
