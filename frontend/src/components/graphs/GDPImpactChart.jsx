@@ -49,7 +49,7 @@ export default function GDPImpactChart({ data }) {
 
           <Tooltip />
 
-          <Bar dataKey="GDP" fill="#2563eb" />
+          <Bar dataKey="GDP" fill="#070808" />
 
         </BarChart>
 

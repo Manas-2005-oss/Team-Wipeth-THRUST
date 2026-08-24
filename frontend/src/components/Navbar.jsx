@@ -1,20 +1,27 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import ChatBot from "../components/ChatBot.jsx";
+import {
+  ChevronDown,
+  LogOut,
+  History,
+  UserRound,
+  LayoutDashboard,
+  Sparkles,
+  SlidersHorizontal,
+} from "lucide-react";
+
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-
-  const [showChat, setShowChat] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
   const profileRef = useRef(null);
 
   const { user } = useAuth();
 
-  const navigate = useNavigate(); // ✅ NEW
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     setShowProfile(false);
@@ -27,6 +34,16 @@ export default function Navbar() {
     }
 
     navigate("/", { replace: true });
+  };
+
+  const goToModeSelection = () => {
+    setShowProfile(false);
+    navigate("/mode-selection");
+  };
+
+  const goToHistory = () => {
+    setShowProfile(false);
+    navigate("/history");
   };
 
   useEffect(() => {
@@ -49,216 +66,473 @@ export default function Navbar() {
     };
   }, []);
 
+  const userName =
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "User";
+
+  const userInitial =
+    user?.user_metadata?.full_name?.[0] ||
+    user?.email?.[0] ||
+    "U";
+
   return (
-    <nav className="w-full top-8 left-0 z-50">
+    <nav className="fixed top-0 left-0 w-full h-[72px] bg-white/95 backdrop-blur-xl border-b border-slate-200 z-50">
 
-      <div className="max-w-9xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="h-full w-full px-6 md:px-10 flex items-center justify-between relative">
 
-        {/* 🔥 LOGO */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
+        {/* ================= LOGO ================= */}
+
+        <motion.button
+          onClick={() => navigate("/")}
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 shrink-0"
         >
-          <span
-            className="text-2xl font-bold tracking-widest"
-            style={{
-              fontFamily: "Bebas Neue, Anton",
-              letterSpacing: "0.18em",
-              textShadow: "0 0 20px rgba(255,255,255,1.0)"
-            }}
-          >
-            THRUST
-          </span>
-        </motion.div>
-
-        {/* 🔥 CENTER MENU */}
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute left-1/2 -translate-x-1/2"
-        >
-          <div className="bg-white/80 backdrop-blur-md rounded-full shadow-lg px-10 py-3 border border-white/40">
-            <ul className="flex items-center gap-10 text-sm font-semibold text-slate-800">
-              <NavItem to="/">Home</NavItem>
-              <NavItem to="/dashboard">Dashboard</NavItem>
-              <NavItem to="/labor-adjustment">Labor Adjustment</NavItem>
-              <NavItem to="/about">About Project</NavItem>
-              <NavItem to="/team">Team</NavItem>
-            </ul>
-          </div>
-        </motion.div>
-
-        <div
-          ref={profileRef}
-          className="flex items-center gap-4 relative"
-        >
-
-          {/* AI CHAT */}
-          <motion.button
-            onClick={() => setShowChat(true)}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-            className="bg-black text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-md hover:bg-gray-800"
-          >
-            AI Policy Assistant
-          </motion.button>
-
-          {/* MODE */}
-          <motion.button
-            onClick={() => navigate("/mode-selection")}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
+          <div
             className="
-      bg-gradient-to-r from-blue-600 to-cyan-500
-      text-white px-4 py-2 rounded-full
-      text-sm font-semibold
-      shadow-md hover:shadow-xl
-      transition-all duration-300
-    "
+              w-10
+              h-10
+              rounded-xl
+              bg-[#25245f]
+              text-white
+              flex
+              items-center
+              justify-center
+              shadow-[0_8px_20px_rgba(37,36,95,0.22)]
+            "
           >
+            <Sparkles size={18} />
+          </div>
+
+          <div className="flex flex-col items-start">
+
+            <span className="text-[17px] font-bold text-[#252a4d] leading-none">
+              CGE Simulator
+            </span>
+
+            <span className="text-[10px] text-slate-400 mt-1">
+              Economic intelligence
+            </span>
+
+          </div>
+
+        </motion.button>
+
+
+        {/* ================= CENTER NAVIGATION ================= */}
+
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="
+            hidden
+            md:flex
+            absolute
+            left-1/2
+            -translate-x-1/2
+            h-full
+            items-center
+          "
+        >
+
+          <div className="flex items-center gap-8 h-full">
+
+            <NavItem to="/mode-selection">
+              Mode
+            </NavItem>
+
+            <NavItem to="/economist">
+              Economist Mode
+            </NavItem>
+
+            <NavItem to="/history">
+              History
+            </NavItem>
+
+          </div>
+
+        </motion.div>
+
+
+        {/* ================= RIGHT SIDE ================= */}
+
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-3 relative shrink-0"
+          ref={profileRef}
+        >
+
+          {/* MODE BUTTON */}
+
+          <motion.button
+            onClick={goToModeSelection}
+            whileHover={{
+              scale: 1.04,
+              boxShadow:
+                "0 10px 24px rgba(37,36,95,0.18)",
+            }}
+            whileTap={{ scale: 0.96 }}
+            className="
+              hidden
+              sm:flex
+              items-center
+              gap-2
+              px-4
+              py-2.5
+              rounded-lg
+              bg-[#25245f]
+              text-white
+              text-[12px]
+              font-semibold
+              shadow-md
+              hover:bg-[#1e1d52]
+              transition-all
+            "
+          >
+            <LayoutDashboard size={15} />
+
             Mode
           </motion.button>
 
-          {/* PROFILE ICON */}
+
+          {/* PROFILE */}
+
           <motion.button
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowProfile(!showProfile)}
+            onClick={() =>
+              setShowProfile(!showProfile)
+            }
+            whileHover={{
+              scale: 1.04,
+            }}
+            whileTap={{
+              scale: 0.96,
+            }}
             className="
-      w-11 h-11
-      rounded-full
-      bg-white
-      text-slate-800
-      font-bold
-      shadow-lg
-      flex
-      items-center
-      justify-center
-    "
+              flex
+              items-center
+              gap-2
+              group
+            "
           >
-            {(
-              user?.user_metadata?.full_name?.[0] ||
-              user?.email?.[0] ||
-              "U"
-            ).toUpperCase()}
+
+            <div
+              className="
+                relative
+                w-11
+                h-11
+                rounded-full
+                bg-[#25245f]
+                text-white
+                font-bold
+                text-sm
+                flex
+                items-center
+                justify-center
+                shadow-[0_8px_20px_rgba(37,36,95,0.18)]
+                transition-all
+                group-hover:shadow-lg
+              "
+            >
+              {userInitial.toUpperCase()}
+
+              <span
+                className="
+                  absolute
+                  right-0
+                  bottom-0
+                  w-3
+                  h-3
+                  rounded-full
+                  bg-white
+                  border-2
+                  border-[#f8f9fc]
+                "
+              />
+            </div>
+
+            <ChevronDown
+              size={16}
+              className={`
+                text-slate-400
+                transition-transform
+                duration-300
+                hidden
+                sm:block
+                ${showProfile ? "rotate-180" : ""}
+              `}
+            />
+
           </motion.button>
+
+
+          {/* ================= PROFILE DROPDOWN ================= */}
 
           <AnimatePresence>
 
             {showProfile && (
 
               <motion.div
-                initial={{ opacity: 0, y: -15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
+                initial={{
+                  opacity: 0,
+                  y: -10,
+                  scale: 0.97,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -10,
+                  scale: 0.97,
+                }}
+                transition={{
+                  duration: 0.18,
+                }}
                 className="
-          absolute
-          right-0
-          top-14
-          w-72
-          bg-white
-          rounded-xl
-          shadow-2xl
-          overflow-hidden
-        "
+                  absolute
+                  right-0
+                  top-[58px]
+                  w-[290px]
+                  bg-white
+                  rounded-2xl
+                  border
+                  border-slate-200
+                  shadow-[0_20px_50px_rgba(15,23,42,0.16)]
+                  overflow-hidden
+                  z-[100]
+                "
               >
 
-                <div className="px-5 py-4 border-b">
+                {/* PROFILE HEADER */}
 
-                  <div className="font-semibold text-slate-800">
-                    {user?.user_metadata?.full_name || "User"}
-                  </div>
+                <div className="px-5 py-5 bg-slate-50 border-b border-slate-100">
 
-                  <div className="text-sm text-slate-500 break-all">
-                    {user?.email}
+                  <div className="flex items-center gap-3">
+
+                    <div
+                      className="
+                        w-11
+                        h-11
+                        rounded-full
+                        bg-[#25245f]
+                        text-white
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                      "
+                    >
+                      {userInitial.toUpperCase()}
+                    </div>
+
+                    <div className="min-w-0">
+
+                      <h3 className="font-semibold text-slate-800 text-sm truncate">
+                        {userName}
+                      </h3>
+
+                      <p className="text-xs text-slate-400 truncate mt-1">
+                        {user?.email || "No email available"}
+                      </p>
+
+                    </div>
+
                   </div>
 
                 </div>
 
-                <button
-                  onClick={handleLogout}
-                  className="
-            w-full
-            text-left
-            px-5
-            py-3
-            hover:bg-red-50
-            text-red-600
-            font-medium
-          "
-                >
-                  Logout
-                </button>
-                <button
-                  onClick={() => navigate("/history")}
-                  className="w-full text-left px-4 py-2 hover:bg-red-50 transition"
-                >
-                  Policy Workspace
-                </button>
+
+                {/* MENU */}
+
+                <div className="p-2">
+
+                  <button
+                    onClick={goToModeSelection}
+                    className="
+                      w-full
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      rounded-xl
+                      text-sm
+                      font-medium
+                      text-slate-600
+                      hover:bg-[#f1f2f8]
+                      hover:text-[#25245f]
+                      transition
+                    "
+                  >
+                    <LayoutDashboard size={17} />
+
+                    Mode Selection
+                  </button>
+
+
+                  <button
+                    onClick={goToHistory}
+                    className="
+                      w-full
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      rounded-xl
+                      text-sm
+                      font-medium
+                      text-slate-600
+                      hover:bg-[#f1f2f8]
+                      hover:text-[#25245f]
+                      transition
+                    "
+                  >
+                    <History size={17} />
+
+                    Policy Workspace
+                  </button>
+
+
+                  <button
+                    onClick={() => {
+                      setShowProfile(false);
+                      navigate("/profile");
+                    }}
+                    className="
+                      w-full
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      rounded-xl
+                      text-sm
+                      font-medium
+                      text-slate-600
+                      hover:bg-[#f1f2f8]
+                      hover:text-[#25245f]
+                      transition
+                    "
+                  >
+                    <UserRound size={17} />
+
+                    My Profile
+                  </button>
+
+                </div>
+
+
+                {/* LOGOUT */}
+
+                <div className="border-t border-slate-100 p-2">
+
+                  <button
+                    onClick={handleLogout}
+                    className="
+                      w-full
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      rounded-xl
+                      text-sm
+                      font-semibold
+                      text-red-600
+                      hover:bg-red-50
+                      transition
+                    "
+                  >
+                    <LogOut size={17} />
+
+                    Logout
+                  </button>
+
+                </div>
+
               </motion.div>
 
             )}
 
           </AnimatePresence>
 
-        </div>
-
-        {/* 🤖 CHATBOT PANEL */}
-        {showChat && (
-          <div className="fixed top-24 right-5 w-[350px] h-[500px] bg-white rounded-xl shadow-xl z-50 flex flex-col">
-
-            {/* Header */}
-            <div className="flex justify-between items-center p-3 border-b">
-              <span className="font-semibold">AI Policy Assistant</span>
-              <button
-                onClick={() => setShowChat(false)}
-                className="text-red-500 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Chat */}
-            <div className="flex-1 overflow-hidden">
-              <ChatBot />
-            </div>
-
-          </div>
-        )}
+        </motion.div>
 
       </div>
+
     </nav>
   );
 }
 
-/* 🔥 NAV ITEM */
+
+/* =========================================================
+   NAVIGATION ITEM
+========================================================= */
+
 function NavItem({ to, children }) {
   return (
-    <li>
-      <NavLink to={to}>
-        {({ isActive }) => (
-          <motion.span
-            whileHover={{
-              scale: 1.15,
-              textShadow: "0 0 12px rgba(37,99,235,0.9)"
-            }}
-            transition={{ type: "spring", stiffness: 300 }}
-            className={`relative cursor-pointer ${isActive ? "text-blue-600" : "text-slate-700"
-              }`}
+    <NavLink to={to}>
+      {({ isActive }) => (
+
+        <motion.div
+          whileHover={{
+            color: "#25245f",
+          }}
+          className="
+            relative
+            h-[72px]
+            flex
+            items-center
+            px-1
+            text-[13px]
+            font-medium
+            transition-colors
+          "
+        >
+
+          <span
+            className={
+              isActive
+                ? "text-[#25245f] font-semibold"
+                : "text-slate-500"
+            }
           >
             {children}
+          </span>
 
-            {isActive && (
-              <motion.div
-                layoutId="navUnderline"
-                className="absolute left-0 right-0 -bottom-2 h-[2px] bg-blue-600 rounded-full"
-              />
-            )}
-          </motion.span>
-        )}
-      </NavLink>
-    </li>
+
+          {isActive && (
+
+            <motion.div
+              layoutId="navUnderline"
+              className="
+                absolute
+                left-0
+                right-0
+                bottom-0
+                h-[2px]
+                rounded-full
+                bg-[#25245f]
+              "
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 30,
+              }}
+            />
+
+          )}
+
+        </motion.div>
+
+      )}
+    </NavLink>
   );
 }
