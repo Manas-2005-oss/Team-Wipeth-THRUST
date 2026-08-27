@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,7 +13,12 @@ import GDPGrowthChart from "../components/graphs/GDPGrowthChart";
 import PolicyImpactChart from "../components/graphs/PolicyImpactChart";
 import LaborMarketChart from "../components/graphs/LaborMarketChart";
 
-import { saveLLMSession } from "../services/llmHistory";
+import {
+  saveLLMSession,
+  getLLMHistory,
+  getLLMSessionById,
+  deleteLLMSession,
+} from "../services/llmHistory";
 
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
@@ -109,12 +114,9 @@ export default function EconomistDashboard() {
     };
 
   }, []);
-
-
   /* =========================================================
      LOGOUT
   ========================================================= */
-
   const handleLogout = async () => {
 
     setShowProfile(false);
@@ -208,29 +210,18 @@ export default function EconomistDashboard() {
   ========================================================= */
 
   useEffect(() => {
-
     const prompt =
       sessionStorage.getItem("llmPrompt");
-
     const savedClosure =
       sessionStorage.getItem("llmClosure");
-
     if (prompt) {
-
       setPolicy(prompt);
-
       sessionStorage.removeItem("llmPrompt");
-
     }
-
     if (savedClosure) {
-
       setClosure(savedClosure);
-
       sessionStorage.removeItem("llmClosure");
-
     }
-
   }, []);
 
 
@@ -251,7 +242,7 @@ export default function EconomistDashboard() {
       label: "History",
       icon: History,
       active: false,
-      action: () => navigate("/history"),
+      action: () => navigate("/llm-history"),
     },
 
   ];
@@ -316,8 +307,6 @@ export default function EconomistDashboard() {
             rgba(18,19,88,.12) !important;
 
         }
-
-
         .theme-chart
         .recharts-cartesian-axis-tick-line {
 
@@ -514,64 +503,36 @@ export default function EconomistDashboard() {
             ease-out;
 
         }
-
-
         @keyframes resultAppear {
-
           from {
-
             opacity: 0;
-
             transform:
               translateY(8px);
-
           }
-
           to {
-
             opacity: 1;
-
             transform:
               translateY(0);
-
           }
-
         }
-
-
         .chart-canvas {
-
           width: 100%;
-
           min-height:
             285px;
-
           display:
             flex;
-
           align-items:
             center;
-
           justify-content:
             center;
-
         }
-
-
         @media (max-width: 768px) {
-
           .chart-canvas {
-
             min-height:
               240px;
-
           }
-
         }
-
       `}</style>
-
-
       {/* =====================================================
           NAVBAR
       ====================================================== */}
@@ -698,7 +659,7 @@ export default function EconomistDashboard() {
           <TopNavItem
             label="History"
             onClick={() =>
-              navigate("/history")
+              navigate("/llm-history")
             }
           />
 

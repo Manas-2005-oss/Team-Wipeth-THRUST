@@ -1,14 +1,14 @@
 import { supabase } from "../lib/supabase";
 
 // ==========================
-// Save AI Policy Session
+// Save LLM / Economist Session
 // ==========================
+
 export async function saveLLMSession({
   title,
   prompt,
   closure,
   response,
-
 }) {
   const {
     data: { user },
@@ -18,7 +18,7 @@ export async function saveLLMSession({
     throw new Error("User not logged in");
   }
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("llm_history")
     .insert({
       user_id: user.id,
@@ -26,17 +26,23 @@ export async function saveLLMSession({
       prompt,
       response,
       closure,
-    });
+    })
+    .select()
+    .single();
 
   if (error) {
-    console.error(error);
+    console.error("Error saving LLM history:", error);
     throw error;
   }
+
+  return data;
 }
 
 // ==========================
-// Get User Sessions
+// Get ONLY current user's
+// LLM / Economist history
 // ==========================
+
 export async function getLLMHistory() {
   const {
     data: { user },
@@ -49,18 +55,23 @@ export async function getLLMHistory() {
   const { data, error } = await supabase
     .from("llm_history")
     .select("*")
-    .order("created_at", { ascending: false });
+    .eq("user_id", user.id)
+    .order("created_at", {
+      ascending: false,
+    });
 
   if (error) {
+    console.error("Error loading LLM history:", error);
     throw error;
   }
 
-  return data;
+  return data || [];
 }
 
 // ==========================
-// Get One Session
+// Get one LLM session
 // ==========================
+
 export async function getLLMSessionById(id) {
   const {
     data: { user },
@@ -78,6 +89,11 @@ export async function getLLMSessionById(id) {
     .single();
 
   if (error) {
+    console.error(
+      "Error loading LLM session:",
+      error
+    );
+
     throw error;
   }
 
@@ -85,8 +101,9 @@ export async function getLLMSessionById(id) {
 }
 
 // ==========================
-// Delete Session
+// Delete LLM session
 // ==========================
+
 export async function deleteLLMSession(id) {
   const {
     data: { user },
@@ -103,6 +120,11 @@ export async function deleteLLMSession(id) {
     .eq("user_id", user.id);
 
   if (error) {
+    console.error(
+      "Error deleting LLM session:",
+      error
+    );
+
     throw error;
   }
 }

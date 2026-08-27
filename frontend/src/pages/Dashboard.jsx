@@ -7,7 +7,8 @@ import SimulationHistory from "../components/SimulationHistory";
 
 import {
   saveSimulation,
-  getSimulationHistory,
+  getSimulationHistory, getSimulationById,
+  deleteSimulation,
 } from "../services/simulationHistory";
 
 export default function Dashboard() {
