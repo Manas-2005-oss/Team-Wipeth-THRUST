@@ -45,9 +45,7 @@ import {
 export default function EconomistDashboard() {
 
   const navigate = useNavigate();
-
   const { user } = useAuth();
-
   const [policy, setPolicy] = useState("");
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,7 +57,6 @@ export default function EconomistDashboard() {
   ========================================================= */
 
   const [showProfile, setShowProfile] = useState(false);
-
   const profileRef = useRef(null);
 
 
@@ -85,60 +82,42 @@ export default function EconomistDashboard() {
   ========================================================= */
 
   useEffect(() => {
-
     const handleClickOutside = (event) => {
-
       if (
         profileRef.current &&
         !profileRef.current.contains(event.target)
       ) {
-
         setShowProfile(false);
-
       }
-
     };
-
     document.addEventListener(
       "mousedown",
       handleClickOutside
     );
-
     return () => {
-
       document.removeEventListener(
         "mousedown",
         handleClickOutside
       );
-
     };
-
   }, []);
   /* =========================================================
      LOGOUT
   ========================================================= */
   const handleLogout = async () => {
-
     setShowProfile(false);
-
     const { error } =
       await supabase.auth.signOut();
-
     if (error) {
-
       console.error(
         "Logout error:",
         error
       );
-
       return;
-
     }
-
     navigate("/", {
       replace: true,
     });
-
   };
 
 
@@ -147,61 +126,42 @@ export default function EconomistDashboard() {
   ========================================================= */
 
   const runSimulation = async () => {
-
     if (!policy.trim()) return;
-
     setLoading(true);
-
     try {
-
       const response = await fetch(
         "http://localhost:8000/simulate-policy",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
             policy: policy,
             closure: closure,
           }),
         }
       );
-
       const data = await response.json();
-
       console.log(data);
-
       setResults(data);
-
       await saveLLMSession({
         title:
           policy.length > 50
             ? policy.substring(0, 50) + "..."
             : policy,
-
         prompt: policy,
-
         response: data,
-
         closure: closure,
       });
-
     } catch (error) {
-
       console.error(
         "Error:",
         error
       );
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
 
@@ -257,10 +217,7 @@ export default function EconomistDashboard() {
     user?.email?.[0] ||
     "U"
   ).toUpperCase();
-
-
   return (
-
     <div
       className="
         min-h-screen
