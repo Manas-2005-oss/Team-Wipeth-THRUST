@@ -241,224 +241,135 @@ export default function EconomistDashboard() {
           --chart-background: #FFFFFF;
 
         }
-
-
         .theme-chart
         .recharts-cartesian-grid-horizontal
         line,
-
         .theme-chart
         .recharts-cartesian-grid-vertical
         line {
-
           stroke:
             rgba(18,19,88,.075) !important;
-
         }
-
-
         .theme-chart
         .recharts-cartesian-axis-line {
-
           stroke:
             rgba(18,19,88,.12) !important;
-
         }
         .theme-chart
         .recharts-cartesian-axis-tick-line {
-
           stroke:
             rgba(18,19,88,.10) !important;
-
         }
-
-
         .theme-chart
         .recharts-text {
-
           fill:
             #6D708F !important;
-
           font-size:
             10px !important;
-
         }
-
-
         .theme-chart
         .recharts-cartesian-axis-tick-value {
-
           fill:
             #6D708F !important;
-
         }
-
-
         .theme-chart
         .recharts-line-curve {
-
           stroke:
             #121358 !important;
-
           stroke-width:
             2.2 !important;
-
         }
-
-
         .theme-chart
         .recharts-line-dot {
-
           fill:
             #121358 !important;
-
           stroke:
             #FFF7F3 !important;
-
           stroke-width:
             2 !important;
-
         }
-
-
         .theme-chart
         .recharts-bar-rectangle {
-
           fill:
             #121358 !important;
-
           opacity:
             .88;
-
         }
-
-
         .theme-chart
         .recharts-bar-rectangle:hover {
-
           opacity:
             1;
-
         }
-
-
         .theme-chart
         .recharts-area-area {
-
           fill:
             rgba(18,19,88,.09) !important;
-
         }
-
-
         .theme-chart
         .recharts-area-curve {
-
           stroke:
             #121358 !important;
-
           stroke-width:
             2 !important;
-
         }
-
-
         .theme-chart
         .recharts-pie-sector {
-
           outline:
             none !important;
-
         }
-
-
         .theme-chart
         .recharts-pie-sector path {
-
           stroke:
             #FFF7F3 !important;
-
           stroke-width:
             2 !important;
-
         }
-
-
         .theme-chart
         .recharts-tooltip-wrapper {
-
           outline:
             none !important;
-
         }
-
-
         .theme-chart
         .recharts-default-tooltip {
-
           background:
             #121358 !important;
-
           border:
             1px solid
             rgba(255,247,243,.18) !important;
-
           border-radius:
             8px !important;
-
           box-shadow:
             0 10px 25px
             rgba(18,19,88,.15) !important;
-
           padding:
             8px 10px !important;
-
         }
-
-
         .theme-chart
         .recharts-tooltip-label {
-
           color:
             #FFF7F3 !important;
-
           font-size:
             10px !important;
-
         }
-
-
         .theme-chart
         .recharts-tooltip-item {
-
           color:
             #FFF7F3 !important;
-
           font-size:
             10px !important;
-
         }
-
-
         .theme-chart
         .recharts-legend-item-text {
-
           color:
             #6D708F !important;
-
           font-size:
             9px !important;
-
         }
-
-
         .result-section {
-
           animation:
             resultAppear
             .35s
             ease-out;
-
         }
         @keyframes resultAppear {
           from {
@@ -490,6 +401,8 @@ export default function EconomistDashboard() {
           }
         }
       `}</style>
+
+      
       {/* =====================================================
           NAVBAR
       ====================================================== */}
